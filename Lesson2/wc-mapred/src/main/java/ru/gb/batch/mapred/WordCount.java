@@ -44,6 +44,7 @@ public class WordCount extends Configured implements Tool {
         @Override
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
             String line = value.toString().toLowerCase();
+			line = line.replaceAll("\\p{Punct}", "");
             StringTokenizer itr = new StringTokenizer(line);
             while (itr.hasMoreTokens()) {
                 word.set(itr.nextToken());
