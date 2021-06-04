@@ -110,8 +110,16 @@ public class WordCount extends Configured implements Tool {
             if (numPartitions == 1) {
                 return 0; // all in one
             }
-
-            return (key.getLength() > 2) ? 1 : 0;
+           if (key.toString().matches("^(?i:[aeiouy]).*")){
+            return 0;
+           } else {
+            char c = key.toString().charAt(0);
+            if (Character.isLetter(c)){
+             return 1;
+            } else  {
+                return 2;
+              } 
+           } 
         }
     }
 
@@ -138,7 +146,7 @@ public class WordCount extends Configured implements Tool {
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
 
-        job.setNumReduceTasks(2);
+        job.setNumReduceTasks(3);
         job.setPartitionerClass(AlphabetPartitioner.class);
 
         FileInputFormat.addInputPath(job, new Path(getConf().get(IN_PATH_PARAM)));
