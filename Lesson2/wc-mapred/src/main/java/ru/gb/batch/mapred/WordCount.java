@@ -14,8 +14,11 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.StringTokenizer;
+import java.util.Map;
+import java.util.HashMap;
+import org.apache.hadoop.fs.FileSystem;
 
 /**
  * Класс запускает MapReduce задачу, которая:
@@ -28,7 +31,7 @@ import java.util.StringTokenizer;
 public class WordCount extends Configured implements Tool {
 
     public static final String IN_PATH_PARAM = "gb.wordcount.input";
-    public static final String OUT_PATH_PARAM = "gb.wordcount.output";
+    public static final String OUT_PATH_PARAM = "gb.wordcount.output"; 
 
     /**
      * Реализация маппера, который разбивает входной текст на отдельные слова, которые отдаёт в качестве ключа, а
@@ -40,16 +43,41 @@ public class WordCount extends Configured implements Tool {
 
         private final static IntWritable one = new IntWritable(1);
         private final Text word = new Text();
+        private final HashMap<String, Integer> hmap = new HashMap<String, Integer>();
+
+
+        public TokenizerMapper () {
+          String filePath = "hdfs:/user/hduser/stopwordv1.txt";
+          String line;
+          try
+          {
+           Path pt=new Path(filePath);
+           FileSystem fs = FileSystem.get(new Configuration());
+           BufferedReader reader=new BufferedReader(new InputStreamReader(fs.open(pt)));
+           while ((line = reader.readLine()) != null)
+           {
+             hmap.put(line, 0); 
+           } 
+           reader.close();
+          }
+              catch (IOException ex)  
+          {
+          }          
+        }
 
         @Override
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
             String line = value.toString().toLowerCase();
-			line = line.replaceAll("\\p{Punct}", "");
+            line = line.replaceAll ("\\p{Punct}","");
             StringTokenizer itr = new StringTokenizer(line);
             while (itr.hasMoreTokens()) {
-                word.set(itr.nextToken());
-                context.write(word, one);
-                context.getCounter(CountersEnum.class.getName(), CountersEnum.INPUT_WORDS.toString()).increment(1);
+                 String testline = itr.nextToken();
+                 testline = testline.trim();
+                 if (!hmap.containsKey(testline)){
+                  word.set(testline); 
+                  context.write(word, one);
+                  context.getCounter(CountersEnum.class.getName(), CountersEnum.INPUT_WORDS.toString()).increment(1);
+                 }
             }
         }
     }
@@ -136,3 +164,4 @@ public class WordCount extends Configured implements Tool {
     }
 
 }
+
