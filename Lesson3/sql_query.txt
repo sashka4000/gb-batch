@@ -1,0 +1,9 @@
+select name from lego_sets where num_parts in (select max(num_parts) from lego_sets);
+
+2021-06-05 12:47:33	End of local task; Time Taken: 2.377 sec.
++------------+
+|    name    |
++------------+
+| Taj Mahal  |
++------------+
+1 row selected (26.523 seconds)
