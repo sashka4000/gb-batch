@@ -1,0 +1,18 @@
+select sum(quantity), color_id from lego_inv_parts where color_id is not null  group by color_id limit 10;
+
++---------+-----------+
+|   _c0   | color_id  |
++---------+-----------+
+| 144     | -1        |
+| 396589  | 0         |
+| 117430  | 1         |
+| 39490   | 2         |
+| 1029    | 3         |
+| 169987  | 4         |
+| 3974    | 5         |
+| 8823    | 6         |
+| 91793   | 7         |
+| 21345   | 8         |
++---------+-----------+
+10 rows selected (2.194 seconds)
+0: jdbc:hive2://localhost:10000> 
