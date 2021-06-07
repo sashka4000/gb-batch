@@ -1,0 +1,19 @@
+select count(*) as cnt, word from ( select explode(split(lower(comment),' ')) as word from ppkm) t group by WORD order by cnt  desc limit 10;
+
+WARNING: Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. spark, tez) or using Hive 1.X releases.
++------+-------------+
+| cnt  |    word     |
++------+-------------+
+| 90   | ppkm        |
+| 67   | mikro       |
+| 60   | dan         |
+| 53   | di          |
+| 52   | masyarakat  |
+| 47   | #ppkmmikro  |
+| 42   |             |
+| 41   | kegiatan    |
+| 40   | pembatasan  |
+| 33   | yg          |
++------+-------------+
+10 rows selected (3.144 seconds)
+0: jdbc:hive2://localhost:10000> 
