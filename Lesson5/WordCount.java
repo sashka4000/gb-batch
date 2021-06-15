@@ -52,7 +52,9 @@ public class WordCount {
         return df.select(concat_ws(" ", col("class"), col("comment")).as("docs"))
                 .select(split(col("docs"), delimiter).as("words"))
                 .select(explode(col("words")).as("word"))
-                .groupBy(col("word")).count();
+				.select(lower(col("word")).as("word_r1"))
+				.select(regexp_replace(col("word_r1"), "[^a-zA-Z0-9]", "").as("word_r2")) 
+                .groupBy(col("word_r2")).count();
     }
 
 }
