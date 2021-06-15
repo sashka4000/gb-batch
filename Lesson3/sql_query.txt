@@ -1,0 +1,8 @@
+select count (*) as CNT, year from lego_sets group by year order by CNT desc limit 1;
+
++------+-------+
+| cnt  | year  |
++------+-------+
+| 674  | 2014  |
++------+-------+
+1 row selected (3.648 seconds)
